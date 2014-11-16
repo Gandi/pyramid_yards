@@ -1,7 +1,8 @@
 pyramid_yard
 ============
 
-A lib that create a "yard" attribte to the pyramid request
-after a pyramid validation of parameters.
+A lib that add a "yards" attribute to the pyramid request,
+containing every validated parameter using colander schemas.
 
-This lib has been inspired by colander.
+This lib has been inspired by cornive "validated" property,
+but the implementation differ.
