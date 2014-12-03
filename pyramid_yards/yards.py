@@ -44,8 +44,9 @@ class RequestSchemaPredicate(object):
             try:
                 if hasattr(attr, 'location'):
                     data = getattr(request, attr.location)
-                    filldict[attr.name] = \
-                        attr.deserialize(data.get(key, attr.default))
+                    val = attr.deserialize(data.get(key, attr.default))
+                    if val != colander.drop:
+                        filldict[attr.name] = val
                 elif attr.children:
                     filldict[attr.name] = {}
                     self.validate(request, attr, filldict[attr.name],
