@@ -1,48 +1,47 @@
+import re
 import os
 import sys
 from setuptools import setup, find_packages
 
-
-py_version = sys.version_info[:2]
-if py_version < (3, 3):
-    raise Exception("websockets requires Python >= 3.3.")
-
+name = 'pyramid-yards'
 here = os.path.abspath(os.path.dirname(__file__))
 
 with open(os.path.join(here, 'README.rst')) as readme:
     README = readme.read()
+
 with open(os.path.join(here, 'CHANGES.rst')) as changes:
     CHANGES = changes.read()
 
+with open(os.path.join(here,
+                       name.replace('-', '_'),
+                       '__init__.py')) as v_file:
+    version = re.compile(r".*__version__ = '(.*?)'",
+                         re.S).match(v_file.read()).group(1)
 
-requires = [
-    'pyramid',
-    'colander>=1.0b1'
-    ]
+requires = ['pyramid',
+            'colander>=1.0b1'
+            ]
 
-
-setup(name='pyramid-yard',
-      version='0.0',
+setup(name=name,
+      version=version,
       description='Pyramid Request Parameter Validation',
-      # long_description=README + '\n\n' + CHANGES,
+      long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
-        "Framework :: Pyramid",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-        "Intended Audience :: Developers",
-        "License :: Repoze Public License",
+          "Programming Language :: Python",
+          "Framework :: Pyramid",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+          "Intended Audience :: Developers",
+          "License :: Repoze Public License",
         ],
       author='Guillaume Gauvrit',
       author_email='guillaume@gauvr.it',
-      url='https://github.com/mardiros/pyramid_yard',
+      url='https://github.com/mardiros/pyramid-yards',
       keywords='pyramid colander',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='pyramid_yard',
+      test_suite='pyramid-yards',
       install_requires=requires,
       license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
       )
