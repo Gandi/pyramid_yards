@@ -1,5 +1,5 @@
-pyramid_yard
-============
+pyramid_yards
+=============
 
 A lib that add a "yards" attribute to the pyramid request,
 containing every validated parameter using colander schemas.
