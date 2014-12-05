@@ -18,6 +18,9 @@ class Yards(object):
     def __call__(self, request):
         return self
 
+    def __repr__(self):
+        return repr(self._data)
+
     def __getitem__(self, key):
         return self._data[key]
 
@@ -48,9 +51,12 @@ class RequestSchemaPredicate(object):
                     if val != colander.drop:
                         filldict[attr.name] = val
                 elif attr.children:
-                    filldict[attr.name] = {}
-                    self.validate(request, attr, filldict[attr.name],
-                                  key + '.')
+                    if isinstance(attr, colander.SequenceSchema):
+                        filldict[attr.name] = attr.deserialize(data.getall(key) or attr.default)
+                    else:
+                        filldict[attr.name] = {}
+                        self.validate(request, attr, filldict[attr.name],
+                                      key + '.')
             except colander.Invalid as exc:
                 for key, val in exc.asdict().items():
                     request.yards.errors[prefix + key] = val
