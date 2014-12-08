@@ -52,7 +52,10 @@ class RequestSchemaPredicate(object):
                         filldict[attr.name] = val
                 elif attr.children:
                     if isinstance(attr, colander.SequenceSchema):
-                        filldict[attr.name] = attr.deserialize(data.getall(key) or attr.default)
+                        val = attr.deserialize(data.getall(key) or
+                                               attr.default)
+                        if val != colander.drop:
+                            filldict[attr.name] = val
                     else:
                         filldict[attr.name] = {}
                         self.validate(request, attr, filldict[attr.name],
