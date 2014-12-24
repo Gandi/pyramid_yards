@@ -27,6 +27,12 @@ class Yards(object):
     def __contains__(self, key):
         return key in self._data
 
+    def keys(self):
+        return self._data.keys()
+
+    def items(self):
+        return self._data.items()
+
     def get(self, key, default=None):
         return self._data.get(key, default)
 
