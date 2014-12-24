@@ -1,4 +1,4 @@
-pyramid-yards
+pyramid_yards
 =============
 
 A lib that add a "yards" attribute to the pyramid request,
