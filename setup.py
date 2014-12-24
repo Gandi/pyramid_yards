@@ -3,7 +3,7 @@ import os
 import sys
 from setuptools import setup, find_packages
 
-name = 'pyramid-yards'
+name = 'pyramid_yards'
 here = os.path.abspath(os.path.dirname(__file__))
 
 with open(os.path.join(here, 'README.rst')) as readme:
@@ -41,7 +41,7 @@ setup(name=name,
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='pyramid-yards',
+      test_suite='pyramid_yards.tests',
       install_requires=requires,
       license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
       )
