@@ -1,7 +1,13 @@
 import logging
+
+from pyramid.httpexceptions import HTTPUnprocessableEntity
 import colander
 
 log = logging.getLogger(__name__)
+
+class ValidationFailure(Exception):
+    def __init__(self, errors):
+        self.errors = errors
 
 
 class Yards(object):
@@ -37,14 +43,9 @@ class Yards(object):
         return self._data.get(key, default)
 
 
-class RequestSchemaPredicate(object):
-    def __init__(self, schema, config):
+class RequestSchema(object):
+    def __init__(self, schema):
         self.schema = schema
-
-    def text(self):
-        return 'request-schema = %s' % (self.schema,)
-
-    phash = text
 
     def validate(self, request, schema, filldict, prefix=''):
         for attr in schema.children:
@@ -70,10 +71,30 @@ class RequestSchemaPredicate(object):
                 for key, val in exc.asdict().items():
                     request.yards.errors[prefix + key] = val
 
+    def __call__(self, request):
+        self.validate(request, self.schema, request.yards._data)
+        if request.yards.errors:
+            raise ValidationFailure(request.yards.errors)
+
+
+class RequestSchemaPredicate(RequestSchema):
+    def __init__(self, schema, config):
+        super(RequestSchemaPredicate, self).__init__(schema)
+
+    def text(self):
+        return 'request-schema = %s' % (self.schema,)
+
+    phash = text
+
+
     def __call__(self, context, request):
         if request.method not in ('POST', 'PUT'):
             return True
-        self.validate(request, self.schema, request.yards._data)
-        # Always return True, otherwise pyramid will raise an
-        # http error, and we don't want that.
+        try:
+            super(RequestSchemaPredicate, self).__call__(request)
+            # Always return True, otherwise pyramid will raise an
+            # http error, and we don't want that.
+        except ValidationFailure:
+            pass  # Using predicated, validation errors ared delayed
+                  # in the view
         return True

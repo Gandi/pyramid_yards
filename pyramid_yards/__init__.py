@@ -8,7 +8,7 @@ __version__ = '0.4'
 
 from pyramid.events import NewRequest
 
-from .yards import Yards, RequestSchemaPredicate
+from .yards import Yards, RequestSchemaPredicate, ValidationFailure
 
 
 def subscribe_yards(event):
