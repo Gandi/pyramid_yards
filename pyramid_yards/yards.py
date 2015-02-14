@@ -75,6 +75,7 @@ class RequestSchema(object):
         self.validate(request, self.schema, request.yards._data)
         if request.yards.errors:
             raise ValidationFailure(request.yards.errors)
+        return request
 
 
 class RequestSchemaPredicate(RequestSchema):
