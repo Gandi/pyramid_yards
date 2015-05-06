@@ -1,0 +1,16 @@
+Source: pyramid-yards
+Priority: optional
+Section: python
+Maintainer: Guillaume Gauvrit <guillaume@gandi.net>
+Build-Depends: debhelper (>= 8),
+ python (>= 2.7)
+Build-Depends-Indep: python-setuptools, python-babel
+Standards-Version: 3.9.1
+X-Python-Version: >= 2.7
+
+Package: python-pyramid-yards
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Description: An http parameters validator for the Pyramid Web framework 
+ pyramid-yards use colander to validate parameters and add a yards attribute.
