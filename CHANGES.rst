@@ -4,7 +4,7 @@ Changelog
 0.4 (2014-12-24)
 ----------------
 
- * Use request.yards as a dict mappint
+ * Use request.yards as a dict mapping
 
 
 0.3 (2014-12-15)
