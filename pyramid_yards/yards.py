@@ -5,6 +5,7 @@ import colander
 
 log = logging.getLogger(__name__)
 
+
 class ValidationFailure(Exception):
     def __init__(self, errors):
         self.errors = errors
@@ -68,6 +69,7 @@ class RequestSchema(object):
                         self.validate(request, attr, filldict[attr.name],
                                       key + '.')
             except colander.Invalid as exc:
+                filldict[attr.name] = None
                 for key, val in exc.asdict().items():
                     request.yards.errors[prefix + key] = val
 
@@ -87,7 +89,6 @@ class RequestSchemaPredicate(RequestSchema):
 
     phash = text
 
-
     def __call__(self, context, request):
         if request.method not in ('POST', 'PUT'):
             return True
@@ -96,6 +97,7 @@ class RequestSchemaPredicate(RequestSchema):
             # Always return True, otherwise pyramid will raise an
             # http error, and we don't want that.
         except ValidationFailure:
-            pass  # Using predicated, validation errors ared delayed
-                  # in the view
+            # Using predicated, validation errors ared delayed
+            # in the view
+            pass
         return True
