@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.5 (2014-06-02)
+----------------
+
+ * Ensure request.yards dict contains every described fields
+
 0.4 (2014-12-24)
 ----------------
 

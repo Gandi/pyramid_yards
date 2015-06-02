@@ -1,3 +1,9 @@
+pyramid-yards (0.5) unstable; urgency=low
+
+  * New uptream version.
+
+ -- Guillaume Gauvrit <guillaume@gandi.net>  Tue, 02 Jun 2015 15:30:00 +0200
+
 pyramid-yards (0.4) unstable; urgency=low
 
   * Initial release.
