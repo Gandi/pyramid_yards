@@ -20,7 +20,7 @@ def subscribe_yards(event):
 def includeme(config):
     settings = config.registry.settings
     RequestSchemaPredicate.check_csrf_token = asbool(
-        settings.get('pyramid_yards.check_csrf_token', 'false'))
+        settings.get('pyramid_yards.check_csrf_token', 'true'))
     config.add_subscriber(subscribe_yards, NewRequest)
     config.add_view_predicate('request_schema', RequestSchemaPredicate)
 
