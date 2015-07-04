@@ -1,9 +1,12 @@
 import logging
 
 import colander
+import translationstring
+from functools import partial
 from pyramid.session import check_csrf_token as check_csrf
 
 log = logging.getLogger(__name__)
+_ = translationstring.TranslationStringFactory('pyramid-yards')
 
 
 class ValidationFailure(Exception):
@@ -101,8 +104,16 @@ class RequestSchemaPredicate(RequestSchema):
             # in the view
             pass
 
-        if self.check_csrf_token and check_csrf(request, raises=False):
-            request.yards.errors['csrf_token'] = 'Bad CSRF Token'
+        if self._check_csrf and not check_csrf(request, raises=False):
+            log.warn('CSRF Attack from {0}'.format(request.client_addr))
+            log.info(request.locale_name)
+
+            message = _("Invalid value")
+            log.info(request.locale_name)
+            if request.localizer:
+                message = request.localizer.translate(message,
+                                                      domain='pyramid-yards')
+            request.yards.errors['csrf_token'] = message
 
         # Always return True, otherwise pyramid will raise an
         # http error, and we don't want that.

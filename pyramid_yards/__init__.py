@@ -23,3 +23,6 @@ def includeme(config):
         settings.get('pyramid_yards.check_csrf_token', 'false'))
     config.add_subscriber(subscribe_yards, NewRequest)
     config.add_view_predicate('request_schema', RequestSchemaPredicate)
+
+    config.add_translation_dirs('pyramid_yards:locales'
+                                )
