@@ -1,5 +1,5 @@
 """
-pyramid_kvs is a Key/Value Store helpers for pyramid.
+pyramid_yards is a helpers for validating for on Pyramid
 
 See the README.rst file for more information.
 """
@@ -7,6 +7,7 @@ See the README.rst file for more information.
 __version__ = '0.5'
 
 from pyramid.events import NewRequest
+from pyramid.settings import asbool
 
 from .yards import Yards, RequestSchemaPredicate, ValidationFailure
 
@@ -17,5 +18,8 @@ def subscribe_yards(event):
 
 
 def includeme(config):
+    settings = config.registry.settings
+    RequestSchemaPredicate.check_csrf_token = asbool(
+        settings.get('pyramid_yards.check_csrf_token', 'false'))
     config.add_subscriber(subscribe_yards, NewRequest)
     config.add_view_predicate('request_schema', RequestSchemaPredicate)

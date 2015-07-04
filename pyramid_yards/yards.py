@@ -1,7 +1,7 @@
 import logging
 
-from pyramid.httpexceptions import HTTPUnprocessableEntity
 import colander
+from pyramid.session import check_csrf_token as check_csrf
 
 log = logging.getLogger(__name__)
 
@@ -81,6 +81,8 @@ class RequestSchema(object):
 
 
 class RequestSchemaPredicate(RequestSchema):
+    check_csrf_token = True
+
     def __init__(self, schema, config):
         super(RequestSchemaPredicate, self).__init__(schema)
 
@@ -90,14 +92,18 @@ class RequestSchemaPredicate(RequestSchema):
     phash = text
 
     def __call__(self, context, request):
-        if request.method not in ('POST', 'PUT'):
+        if request.method not in ('POST', 'PUT', 'PATCH', 'DELETE'):
             return True
         try:
             super(RequestSchemaPredicate, self).__call__(request)
-            # Always return True, otherwise pyramid will raise an
-            # http error, and we don't want that.
         except ValidationFailure:
             # Using predicated, validation errors ared delayed
             # in the view
             pass
+
+        if self.check_csrf_token and check_csrf(request, raises=False):
+            request.yards.errors['csrf_token'] = 'Bad CSRF Token'
+
+        # Always return True, otherwise pyramid will raise an
+        # http error, and we don't want that.
         return True
