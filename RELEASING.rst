@@ -8,8 +8,7 @@ How to release pyranid_yards
  * Fill the changelog (CHANGES.rst)
  * Fill the debian/changelog
  * run `python setup.py develop`
- * run `python setup.py extract_messages`
- * run `python setup.py update_catalog`
+ * run `python setup.py extract_messages update_catalog`
  * ensure there is no missing translations in locales
  * run `python setup.py compile_catalog`
  * run `git add -u`
