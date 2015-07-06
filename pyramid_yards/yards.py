@@ -84,7 +84,7 @@ class RequestSchema(object):
 
 
 class RequestSchemaPredicate(RequestSchema):
-    check_csrf_token = False
+    check_csrf_token = None  # default value in the includeme
 
     def __init__(self, schema, config):
         self._check_csrf = not getattr(schema, 'DISABLE_CSRF_CHECK',
