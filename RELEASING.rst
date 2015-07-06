@@ -12,5 +12,9 @@ How to release pyranid_yards
  * run `python setup.py update_catalog`
  * ensure there is no missing translations in locales
  * run `git add -u`
- *
-
+ * run `git commit -m "Release X.Y" where X.Y is the version numer
+ * run `git push origin master:master"
+ * run `python setup.py sdist upload`
+ * run `git tag X.Y`
+ * run `git push origin X.Y`
+ 

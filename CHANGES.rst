@@ -1,10 +1,21 @@
 Changelog
 =========
 
+0.6 (2015-07-06)
+----------------
+
+ * Check the CSRF (active by default!)
+ 
+  You can use the settings `pyramid_yards.check_csrf_token` to disable it
+  globally (while writing json API), or locally by adding the attribute
+  DISABLE_CSRF_CHECK = False in the `request_schema`
+
+
 0.5 (2015-06-02)
 ----------------
 
  * Ensure request.yards dict contains every described fields
+
 
 0.4 (2014-12-24)
 ----------------
