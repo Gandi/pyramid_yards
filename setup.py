@@ -22,6 +22,10 @@ requires = ['pyramid',
             'colander>=1.0b1'
             ]
 
+extras_require = {'dev': ['Babel']
+                  }
+
+
 setup(name=name,
       version=version,
       description='Pyramid Request Parameter Validation',
@@ -43,5 +47,6 @@ setup(name=name,
       zip_safe=False,
       test_suite='pyramid_yards.tests',
       install_requires=requires,
+      extras_require=extras_require,
       license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
       )

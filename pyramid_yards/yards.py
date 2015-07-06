@@ -1,9 +1,12 @@
 import logging
 
-from pyramid.httpexceptions import HTTPUnprocessableEntity
 import colander
+import translationstring
+from functools import partial
+from pyramid.session import check_csrf_token as check_csrf
 
 log = logging.getLogger(__name__)
+_ = translationstring.TranslationStringFactory('pyramid-yards')
 
 
 class ValidationFailure(Exception):
@@ -81,7 +84,11 @@ class RequestSchema(object):
 
 
 class RequestSchemaPredicate(RequestSchema):
+    check_csrf_token = False
+
     def __init__(self, schema, config):
+        self._check_csrf = not getattr(schema, 'DISABLE_CSRF_CHECK',
+                                       not self.check_csrf_token)
         super(RequestSchemaPredicate, self).__init__(schema)
 
     def text(self):
@@ -90,14 +97,26 @@ class RequestSchemaPredicate(RequestSchema):
     phash = text
 
     def __call__(self, context, request):
-        if request.method not in ('POST', 'PUT'):
+        if request.method not in ('POST', 'PUT', 'PATCH', 'DELETE'):
             return True
         try:
             super(RequestSchemaPredicate, self).__call__(request)
-            # Always return True, otherwise pyramid will raise an
-            # http error, and we don't want that.
         except ValidationFailure:
             # Using predicated, validation errors ared delayed
             # in the view
             pass
+
+        if self._check_csrf and not check_csrf(request, raises=False):
+            log.warn('CSRF Attack from {0}'.format(request.client_addr))
+            log.info(request.locale_name)
+
+            message = _("Invalid value")
+            log.info(request.locale_name)
+            if request.localizer:
+                message = request.localizer.translate(message,
+                                                      domain='pyramid-yards')
+            request.yards.errors['csrf_token'] = message
+
+        # Always return True, otherwise pyramid will raise an
+        # http error, and we don't want that.
         return True
