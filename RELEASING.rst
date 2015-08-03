@@ -1,5 +1,5 @@
 ============================
-How to release pyranid_yards
+How to release pyramid_yards
 ============================
 
 
