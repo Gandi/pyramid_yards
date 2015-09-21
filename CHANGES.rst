@@ -2,6 +2,12 @@ Changelog
 =========
 
 
+0.8 (2015-09-21)
+----------------
+
+ * Fix colander.drop deserialization in sequence member
+
+
 0.7 (2015-07-06)
 ----------------
 
