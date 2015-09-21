@@ -63,10 +63,11 @@ class RequestSchema(object):
                         filldict[attr.name] = val
                 elif attr.children:
                     if isinstance(attr, colander.SequenceSchema):
-                        val = attr.deserialize(data.getall(key) or
-                                               attr.default)
-                        if val != colander.drop:
-                            filldict[attr.name] = val
+                        vals = attr.deserialize(data.getall(key) or
+                                                attr.default)
+                        if vals != colander.drop:
+                            filldict[attr.name] = [val for val in vals
+                                                   if val != colander.drop]
                     else:
                         filldict[attr.name] = {}
                         self.validate(request, attr, filldict[attr.name],
