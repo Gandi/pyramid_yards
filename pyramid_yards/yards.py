@@ -66,8 +66,11 @@ class RequestSchema(object):
                         vals = attr.deserialize(data.getall(key) or
                                                 attr.default)
                         if vals != colander.drop:
-                            filldict[attr.name] = [val for val in vals
-                                                   if val != colander.drop]
+                            vals = [val for val in vals
+                                    if val != colander.drop]
+                            # XXX redeserialize ignoring dropped values
+                            # to ensure the length is correct
+                            filldict[attr.name] = attr.deserialize(vals)
                     else:
                         filldict[attr.name] = {}
                         self.validate(request, attr, filldict[attr.name],
