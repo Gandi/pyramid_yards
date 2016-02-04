@@ -4,6 +4,7 @@ import colander
 import translationstring
 from functools import partial
 from pyramid.session import check_csrf_token as check_csrf
+from pyramid.httpexceptions import HTTPMethodNotAllowed
 
 log = logging.getLogger(__name__)
 _ = translationstring.TranslationStringFactory('pyramid-yards')
@@ -81,7 +82,18 @@ class RequestSchema(object):
                     request.yards.errors[prefix + key] = val
 
     def __call__(self, request):
-        self.validate(request, self.schema, request.yards._data)
+        if isinstance(self.schema, dict):
+            if request.method not in self.schema:
+                raise HTTPMethodNotAllowed()
+            schema = self.schema[request.method]
+        else:
+            schema = self.schema
+        log.info('Validating request %s %s using schema %s.%s' %
+                 (request.method, request.path_info,
+                  schema.__module__,
+                  schema.__class__.__name__,
+                  ))
+        self.validate(request, schema, request.yards._data)
         if request.yards.errors:
             raise ValidationFailure(request.yards.errors)
         return request
@@ -101,8 +113,12 @@ class RequestSchemaPredicate(RequestSchema):
     phash = text
 
     def __call__(self, context, request):
-        if request.method not in ('POST', 'PUT', 'PATCH', 'DELETE'):
-            return True
+        if not isinstance(self.schema, dict):
+            # ???
+            # warnings.warn('request_schema predicate must be a dict',
+            #               category=DeprecationWarning)
+            if request.method not in ('POST', 'PUT', 'PATCH', 'DELETE'):
+                return True
         try:
             super(RequestSchemaPredicate, self).__call__(request)
         except ValidationFailure:
@@ -110,7 +126,8 @@ class RequestSchemaPredicate(RequestSchema):
             # in the view
             pass
 
-        if self._check_csrf and not check_csrf(request, raises=False):
+        if (request.method != 'GET' and
+                self._check_csrf and not check_csrf(request, raises=False)):
             log.warn('CSRF Attack from {0}'.format(request.client_addr))
             log.info(request.locale_name)
 
