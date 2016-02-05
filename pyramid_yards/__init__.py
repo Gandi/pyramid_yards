@@ -4,7 +4,7 @@ pyramid_yards is a helpers for validating for on Pyramid
 See the README.rst file for more information.
 """
 
-__version__ = '0.9'
+__version__ = '0.10'
 
 from pyramid.events import NewRequest
 from pyramid.settings import asbool
