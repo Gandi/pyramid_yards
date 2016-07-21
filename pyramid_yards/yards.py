@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import logging
 
 import colander
@@ -59,11 +61,8 @@ class RequestSchema(object):
             try:
                 if hasattr(attr, 'location'):
                     data = getattr(request, attr.location)
-                    val = attr.deserialize(data.get(key, attr.default))
-                    if val != colander.drop:
-                        filldict[attr.name] = val
-                elif attr.children:
                     if isinstance(attr, colander.SequenceSchema):
+                        data = getattr(request, attr.location)
                         vals = attr.deserialize(data.getall(key) or
                                                 attr.default)
                         if vals != colander.drop:
@@ -73,9 +72,13 @@ class RequestSchema(object):
                             # to ensure the length is correct
                             filldict[attr.name] = attr.deserialize(vals)
                     else:
-                        filldict[attr.name] = {}
-                        self.validate(request, attr, filldict[attr.name],
-                                      key + '.')
+                        val = attr.deserialize(data.get(key, attr.default))
+                        if val != colander.drop:
+                            filldict[attr.name] = val
+                elif attr.children:
+                    filldict[attr.name] = {}
+                    self.validate(request, attr, filldict[attr.name],
+                                  key + '.')
             except colander.Invalid as exc:
                 filldict[attr.name] = None
                 for key, val in exc.asdict().items():
