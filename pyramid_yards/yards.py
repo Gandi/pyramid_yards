@@ -105,15 +105,33 @@ class RequestSchema(object):
 class RequestSchemaPredicate(RequestSchema):
     check_csrf_token = None  # default value in the includeme
 
-    def __init__(self, schema, config):
-        self._check_csrf = not getattr(schema, 'DISABLE_CSRF_CHECK',
-                                       not self.check_csrf_token)
-        super(RequestSchemaPredicate, self).__init__(schema)
-
     def text(self):
         return 'request-schema = %s' % (self.schema,)
 
     phash = text
+
+    def __init__(self, schema, config):
+        super(RequestSchemaPredicate, self).__init__(schema)
+
+    def is_csrf_token_valid(self, request):
+
+        if request.method == 'GET':
+            return True
+
+        if not self.check_csrf_token:
+            log.warn('CSRF Validation is globally disabled')
+            return True
+        schema = self.schema
+        if isinstance(schema, dict):
+            schema = schema.get(request.method)
+
+        if getattr(schema, 'DISABLE_CSRF_CHECK', False):
+            log.warn('CSRF Validation is disabled by %r', schema)
+            return True
+
+        log.info('Validating csrf token')
+        return not check_csrf(request, raises=False)
+
 
     def __call__(self, context, request):
         if not isinstance(self.schema, dict):
@@ -129,8 +147,7 @@ class RequestSchemaPredicate(RequestSchema):
             # in the view
             pass
 
-        if (request.method != 'GET' and
-                self._check_csrf and not check_csrf(request, raises=False)):
+        if not self.is_csrf_token_valid(request):
             log.warn('CSRF Attack from {0}'.format(request.client_addr))
             log.info(request.locale_name)
 
