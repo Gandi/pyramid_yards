@@ -14,6 +14,7 @@ _ = translationstring.TranslationStringFactory('pyramid-yards')
 
 class ValidationFailure(Exception):
     def __init__(self, errors):
+        super(ValidationFailure, self).__init__('%r' % errors)
         self.errors = errors
 
 
@@ -91,11 +92,11 @@ class RequestSchema(object):
             schema = self.schema[request.method]
         else:
             schema = self.schema
-        log.info('Validating request %s %s using schema %s.%s' %
-                 (request.method, request.path_info,
-                  schema.__module__,
-                  schema.__class__.__name__,
-                  ))
+        log.info('Validating request %s %s using schema %s.%s',
+                 request.method, request.path_info,
+                 schema.__module__,
+                 schema.__class__.__name__,
+                 )
         self.validate(request, schema, request.yards._data)
         if request.yards.errors:
             raise ValidationFailure(request.yards.errors)
@@ -119,19 +120,18 @@ class RequestSchemaPredicate(RequestSchema):
             return True
 
         if not self.check_csrf_token:
-            log.warn('CSRF Validation is globally disabled')
+            log.warning('CSRF Validation is globally disabled')
             return True
         schema = self.schema
         if isinstance(schema, dict):
             schema = schema.get(request.method)
 
         if getattr(schema, 'DISABLE_CSRF_CHECK', False):
-            log.warn('CSRF Validation is disabled by %r', schema)
+            log.warning('CSRF Validation is disabled by %r', schema)
             return True
 
         log.info('Validating csrf token')
         return not check_csrf(request, raises=False)
-
 
     def __call__(self, context, request):
         if not isinstance(self.schema, dict):
@@ -148,7 +148,7 @@ class RequestSchemaPredicate(RequestSchema):
             pass
 
         if not self.is_csrf_token_valid(request):
-            log.warn('CSRF Attack from {0}'.format(request.client_addr))
+            log.warn('CSRF Attack from %s', request.client_addr)
             log.info(request.locale_name)
 
             message = _("Invalid value")
