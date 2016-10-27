@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.12 (2016-10-27)
+-----------------
+
+ * Fix DISABLE_CSRF_CHECK attribute for schema per http verb
+
 0.11 (2016-07-25)
 -----------------
 
