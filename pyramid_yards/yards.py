@@ -131,7 +131,7 @@ class RequestSchemaPredicate(RequestSchema):
             return True
 
         log.info('Validating csrf token')
-        return not check_csrf(request, raises=False)
+        return check_csrf(request, raises=False)
 
     def __call__(self, context, request):
         if not isinstance(self.schema, dict):
