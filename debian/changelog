@@ -1,3 +1,9 @@
+pyramid-yards (0.13) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Guillaume Gauvrit <guillaume@gandi.net>  Fri, 28 Oct 2016 17:05:19 +0200
+
 pyramid-yards (0.12) unstable; urgency=medium
 
   * New release
