@@ -82,7 +82,12 @@ class RequestSchema(object):
                                   key + '.')
             except colander.Invalid as exc:
                 filldict[attr.name] = None
-                for key, val in exc.asdict().items():
+                try:
+                    errors = exc.asdict(request.localizer.translate)
+                except TypeError:
+                    errors = exc.asdict()
+
+                for key, val in errors.items():
                     request.yards.errors[prefix + key] = val
 
     def __call__(self, request):
