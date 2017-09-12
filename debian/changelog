@@ -1,3 +1,9 @@
+pyramid-yards (0.14.1) unstable; urgency=medium
+
+  * Release for debian package only
+
+ -- Guillaume Gauvrit <guillaume@gandi.net>  Tue, 12 Sep 2017 14:23:18 +0200
+
 pyramid-yards (0.14) unstable; urgency=medium
 
   * New upstream release
