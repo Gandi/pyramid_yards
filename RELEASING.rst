@@ -6,7 +6,7 @@ How to release pyramid_yards
  * Ensure you are on git master and up to date
  * Increase version number in pyramid_yards/__init__.py
  * Fill the changelog (CHANGES.rst)
- * Fill the debian/changelog
+ * Fill the debian/changelog (run `dch --increment --no-auto-nmu --distribution "unstable" "New upstream release"`)
  * run `python setup.py develop`
  * run `python setup.py extract_messages update_catalog`
  * ensure there is no missing translations in locales

@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.14 (2017-09-12)
+-----------------
+
+ * Add i18n support for colander message base on locale of pyramid request,
+   requires the locale negociator.
+
 0.13 (2016-10-28)
 -----------------
 
