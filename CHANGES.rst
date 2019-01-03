@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.15 (2019-01-03)
+-----------------
+
+ * Remove deprecation warning for pyramid >= 1.9
+
 0.14 (2017-09-12)
 -----------------
 
