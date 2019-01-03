@@ -5,8 +5,12 @@ import logging
 import colander
 import translationstring
 from functools import partial
-from pyramid.session import check_csrf_token as check_csrf
 from pyramid.httpexceptions import HTTPMethodNotAllowed
+
+try:
+    from pyramid.csrf import check_csrf_token as check_csrf
+except ImportError:
+    from pyramid.session import check_csrf_token as check_csrf
 
 log = logging.getLogger(__name__)
 _ = translationstring.TranslationStringFactory('pyramid-yards')
